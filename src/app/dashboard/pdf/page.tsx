@@ -86,162 +86,110 @@ export default function PdfPage() {
   const progressClassName = isBusy ? "h-2 animate-pulse" : "h-2";
 
   return (
-    <div className="min-h-screen bg-muted">
-      <div className="flex h-screen w-full gap-6 px-8 py-6">
-        {/* Sidebar */}
-        <aside className="flex w-60 flex-col gap-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <FileText className="h-5 w-5" />
-            </div>
+    <>
+      {/* Center column */}
+      <section className="flex-1 space-y-4">
+        <Card className="border-0 bg-primary text-primary-foreground shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <div className="text-sm font-semibold tracking-tight">
-                PDF Console
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Internal tools
-              </div>
+              <CardTitle className="text-2xl">PDF Summary</CardTitle>
+              <CardDescription className="text-primary-foreground/80">
+                Upload a PDF document to generate an AI-based summary.
+              </CardDescription>
             </div>
-          </div>
-          <nav className="space-y-1 text-sm">
             <Button
               variant="secondary"
               size="sm"
-              className="w-full justify-start"
+              onClick={handleReset}
+              disabled={isBusy}
             >
-              <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+              New upload
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              <Inbox className="mr-2 h-4 w-4" /> Inbox
-            </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              <Settings className="mr-2 h-4 w-4" /> Settings
-            </Button>
-          </nav>
-          <div className="mt-auto flex items-center justify-between text-xs text-muted-foreground">
-            <span>v0.1.0 • Internal</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 text-muted-foreground"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
-          </div>
-        </aside>
+          </CardHeader>
+        </Card>
 
-        {/* Main content + right rail */}
-        <main className="flex flex-1 gap-6">
-          {/* Center column */}
-          <section className="flex-1 space-y-4">
-            <Card className="border-0 bg-primary text-primary-foreground shadow-md">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <div>
-                  <CardTitle className="text-2xl">PDF Summary</CardTitle>
-                  <CardDescription className="text-primary-foreground/80">
-                    Upload a PDF document to generate an AI-based summary.
-                  </CardDescription>
-                </div>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleReset}
-                  disabled={isBusy}
-                >
-                  New upload
-                </Button>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Document workflow</CardTitle>
-                <CardDescription>
-                  Upload, process, and review a single PDF at a time.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <PdfUpload
-                  onFileSelected={(f) => setFile(f)}
-                  disabled={isBusy}
-                />
-                <div className="flex flex-wrap items-center gap-3">
-                  <Button onClick={handleGenerate} disabled={isBusy}>
-                    {isBusy && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    {isBusy ? "Processing..." : "Generate summary"}
-                  </Button>
-                  {isBusy && (
-                    <div className="w-48">
-                      <Progress
-                        value={progressValue}
-                        className={progressClassName}
-                      />
-                    </div>
-                  )}
-                  <PdfStatus
-                    status={
-                      status === "uploading"
-                        ? "uploading"
-                        : status === "processing"
-                        ? "processing"
-                        : status === "error"
-                        ? "error"
-                        : "idle"
-                    }
-                    error={error}
+        <Card>
+          <CardHeader>
+            <CardTitle>Document workflow</CardTitle>
+            <CardDescription>
+              Upload, process, and review a single PDF at a time.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <PdfUpload onFileSelected={(f) => setFile(f)} disabled={isBusy} />
+            <div className="flex flex-wrap items-center gap-3">
+              <Button onClick={handleGenerate} disabled={isBusy}>
+                {isBusy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isBusy ? "Processing..." : "Generate summary"}
+              </Button>
+              {isBusy && (
+                <div className="w-48">
+                  <Progress
+                    value={progressValue}
+                    className={progressClassName}
                   />
                 </div>
-              </CardContent>
-              {status === "success" && summary && (
-                <CardFooter className="border-t bg-muted/40 pt-6">
-                  <PdfSummary summary={summary} onReset={handleReset} />
-                </CardFooter>
               )}
-            </Card>
-          </section>
+              <PdfStatus
+                status={
+                  status === "uploading"
+                    ? "uploading"
+                    : status === "processing"
+                    ? "processing"
+                    : status === "error"
+                    ? "error"
+                    : "idle"
+                }
+                error={error}
+              />
+            </div>
+          </CardContent>
+          {status === "success" && summary && (
+            <CardFooter className="border-t bg-muted/40 pt-6">
+              <PdfSummary summary={summary} onReset={handleReset} />
+            </CardFooter>
+          )}
+        </Card>
+      </section>
 
-          {/* Right rail */}
-          <aside className="w-80 space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Run status</CardTitle>
-                <CardDescription>
-                  High-level view of the current upload.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Status</span>
-                  <span className="font-medium">{statusLabel}</span>
-                </div>
-                <Progress value={progressValue} className={progressClassName} />
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Last result</span>
-                  <span className="truncate text-right text-xs text-muted-foreground">
-                    {summary ? "Summary ready" : "No summary generated yet"}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Right rail */}
+      <aside className="w-80 space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Run status</CardTitle>
+            <CardDescription>
+              High-level view of the current upload.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Status</span>
+              <span className="font-medium">{statusLabel}</span>
+            </div>
+            <Progress value={progressValue} className={progressClassName} />
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Last result</span>
+              <span className="truncate text-right text-xs text-muted-foreground">
+                {summary ? "Summary ready" : "No summary generated yet"}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Tips</CardTitle>
-                <CardDescription>
-                  For best results, upload focused reports or briefs.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2 text-xs text-muted-foreground">
-                <p>• Prefer PDFs under 10MB for faster processing.</p>
-                <p>• Summaries work best with clear section headings.</p>
-                <p>• Avoid scanned images without selectable text.</p>
-              </CardContent>
-            </Card>
-          </aside>
-        </main>
-      </div>
-    </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Tips</CardTitle>
+            <CardDescription>
+              For best results, upload focused reports or briefs.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 text-xs text-muted-foreground">
+            <p>• Prefer PDFs under 10MB for faster processing.</p>
+            <p>• Summaries work best with clear section headings.</p>
+            <p>• Avoid scanned images without selectable text.</p>
+          </CardContent>
+        </Card>
+      </aside>
+    </>
   );
 }
