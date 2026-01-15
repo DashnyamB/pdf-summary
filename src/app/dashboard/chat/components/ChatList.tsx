@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
-import type { ChatMessage as ChatMessageType } from "../types/chat";
+import type { ChatMessage as ChatMessageType } from "@/types/chat";
 
 export default function ChatList({ messages }: { messages: ChatMessageType[] }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
