@@ -65,6 +65,12 @@ export default function DashboardLayout({
             >
               User List
             </NavButton>
+            <NavButton
+              href="/dashboard/chat"
+              active={active("/dashboard/chat")}
+            >
+              AI Chat
+            </NavButton>
           </nav>
           <div className="mt-auto flex items-center justify-between text-xs text-muted-foreground">
             <span>v0.1.0 • Internal</span>
